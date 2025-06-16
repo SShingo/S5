@@ -1,0 +1,1 @@
+﻿"C:\Program Files (x86)\WinSCP\winscp.com" /script="C:\Users\jpnssu\SAS\SHINGO PERSONAL WORKS - Scenario Simulation Platform\s5\winscp_sync_script.txt"

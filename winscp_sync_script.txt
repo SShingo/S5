@@ -1,0 +1,7 @@
+﻿option batch abort
+option confirm off
+open sftp://sas:Orion123@jpnvm2011303/ -hostkey="ssh-ed25519 255 ZXMz0Pz2TnyiCHoziJFnmopE8nz+8jA9/peydY/I7Yc="
+option include "*.sas; *.ctm;|*.bat; *.txt; *.schema; *.xlsx; .git/; winscp*"
+synchronize remote "C:\Users\jpnssu\SAS\SHINGO PERSONAL WORKS - Scenario Simulation Platform\s5\program" /sas/RSU/RSU_App/S5/program
+keepuptodate -delete "C:\Users\jpnssu\SAS\SHINGO PERSONAL WORKS - Scenario Simulation Platform\s5\program" /sas/RSU/RSU_App/S5/program
+exit

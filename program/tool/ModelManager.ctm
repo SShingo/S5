@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Task schemaVersion="5.4" runNLS="never">
+	<Registration>
+		<Name>Sample Task</Name>
+		<Description>Scenario Simulation Suite on SAS Stratum: Model Management Tool</Description>
+		<GUID>C6AC34BD-D14A-4CF5-BF2F-A110711BF819</GUID>
+		<Procedures>PRINT</Procedures>
+		<Version>3.8</Version>
+		<Links>
+			<Link href="http://documentation.sas.com/?softwareId=STUDIOMID&amp;softwareVersion=3.8&amp;softwareContextId=tasks&amp;requestor=inapp" nlsKey="LinkKey999">SAS Studio Task Reference Guide</Link>
+		</Links>
+	</Registration>
+
+	<Metadata>
+
+		<!--- Define the data and roles for this task.    -->
+		<DataSources>
+			<DataSource name="DATASOURCE">
+				<Roles>
+					<Role type="A" maxVars="1" order="true" minVars="1" name="VAR">Required variable:</Role>
+					<Role type="N" maxVars="0" order="true" minVars="0" name="OPTNVAR" exclude="VAR">Numeric variable:</Role>
+					<Role type="C" maxVars="3" order="true" minVars="0" name="OPTCVAR">Character variable:</Role>
+				</Roles>
+			</DataSource>
+		</DataSources>
+
+		<!--- Define the task options.             -->
+		<Options>
+			<Option name="TAB_SETTING" inputType="string">設定</Option>
+
+			<Option name="GRP_MODEL_REGISTRATION" inputType="string">モデル登録</Option>
+			<Option name="chk_register_model" defaultValue="0" inputType="checkbox">インポート実行</Option>
+			<Option name="chk_overwrite" defaultValue="0" inputType="checkbox">同一モデルを上書きする</Option>
+			
+			<Option name="GRP_VIEW_MODEL" inputType="string">モデル閲覧</Option>
+			<Option name="text_model_view_filter" defaultValue="" inputType="inputtext"
+				promptMessage="Enter SQL filter.">Filter:</Option>
+			<Option name="text_model_view_sort_by" defaultValue="" inputType="inputtext"
+				promptMessage="Enter Sort Keys.">Sort by:</Option>
+			<Option name="combo_sort_direction" defaultValue="sort_direction_asc" inputType="combobox">Combobox:</Option>
+			<Option name="sort_direction_asc" inputType="string">昇順</Option>
+			<Option name="sort_direction_dsc" inputType="string">降順</Option>
+
+			<Option name="GRP_EXPORT_MODEL" inputType="string">モデルエクスポート</Option>
+			<Option name="chk_export" defaultValue="0" inputType="checkbox">エクスポート実行</Option>
+			<Option name="text_excel_file_name" defaultValue="Model" inputType="inputtext"
+				promptMessage="Enter Excel file name.">エクセルファイル名（拡張子省略可）:</Option>
+		</Options>
+	</Metadata>
+
+	<!--- Define the UI for task options                        -->
+	<!--- The UI engine will determine the best representation. -->
+	<UI>
+		<Container option="TAB_SETTING">
+			<Group option="GRP_MODEL_REGISTRATION" open="true">
+				<OptionItem option="chk_register_model"/>
+				<OptionItem option="chk_overwrite"/>
+			</Group>
+
+			<Group option="GRP_EXPORT_MODEL" open="true">
+				<OptionItem option="chk_export"/>
+				<OptionItem option="text_excel_file_name"/>
+				<OptionItem option="text_model_view_filter"/>
+				<OptionItem option="text_model_view_sort_by"/>
+				<OptionChoice option="combo_sort_direction">
+					<OptionItem option="sort_direction_asc"/>
+					<OptionItem option="sort_direction_dsc"/>
+				</OptionChoice>
+			</Group>
+		</Container>
+	</UI>
+
+	<!--- Define the velocity code template.        -->
+	<CodeTemplate>
+		<![CDATA[
+%rsu_steppingstones_activate;
+%&RSUDebug.Disable;
+%&RSUFile.IncludeSASCodeIn(i_dir_path = &G_APP_ROOT_S5./program/macros
+									, i_is_recursive = %&RSUBool.False)
+/* Model Registeration */
+%&RSUDebug.Disable;
+%&RSUFile.IncludeSASCodeIn(i_dir_path = &G_APP_ROOT_S5./program/macros
+									, i_is_recursive = %&RSUBool.False)
+%let _ui_chk_register_model = $chk_register_model;
+%let _ui_chk_overwrite = $chk_overwrite;
+
+/* Model Export */
+%let _ui_chk_export = $chk_export;
+%let _ui_text_excel_file_name =$text_excel_file_name;
+%let _ui_model_view_filter = $text_model_view_filter;
+%let _ui_model_view_sort_by = $text_model_view_sort_by;
+%let _ui_model_view_order_dir = $combo_sort_direction;
+
+%&ModelManager.Execute(i_chk_register_model = &_ui_chk_register_model.
+							, i_chk_overwrite = &_ui_chk_overwrite.
+							, i_chk_export = &_ui_chk_export.
+							, i_text_excel_file_name = &_ui_text_excel_file_name.
+							, i_text_model_view_filter = &_ui_model_view_filter.
+							, i_text_model_view_sort_by = &_ui_model_view_sort_by.
+							, i_combo_sort_direction = &_ui_model_view_order_dir.
+							, i_user_id = &sysuserid.
+							, i_process_id = ModelManagement)
+		]]>
+	</CodeTemplate>
+</Task>
